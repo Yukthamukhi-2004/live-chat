@@ -5,7 +5,11 @@ import LoginPage from "./components/LoginPage";
 export default function App() {
   return (
     <div className=" bg-slate-950">
-      <LoginPage />
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/chat" element={<ChatWindow />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   );
 }
