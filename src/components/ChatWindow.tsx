@@ -1,26 +1,31 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import Message from "./Message";
-import InputBox from "./InputBox";
 import type { MessageType } from "../Types";
+import InputBox from "./InputBox";
+import Message from "./Message";
 
-// Connect to the backend
 const socket = io("http://localhost:3000");
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState<MessageType[]>([]);
-  /* 
+
   useEffect(() => {
-    // Listen for incoming messages from other clients
-    socket.on("receive_message", (data: MessageType) => {
-      // Show received messages as being from a "bot" / other user for visual distinction
-      setMessages((prev) => [...prev, { ...data, sender: "bot" }]);
-    });
+    const handleReceiveMessage = (message: MessageType) => {
+      setMessages((prev) => {
+        if (prev.some((existingMessage) => existingMessage.id === message.id)) {
+          return prev;
+        }
+
+        return [...prev, { ...message, sender: "bot" }];
+      });
+    };
+
+    socket.on("receive_message", handleReceiveMessage);
 
     return () => {
-      socket.off("receive_message");
+      socket.off("receive_message", handleReceiveMessage);
     };
-  }, []); */
+  }, []);
 
   const handleSend = (text: string) => {
     const newMessage: MessageType = {
@@ -30,26 +35,36 @@ export default function ChatWindow() {
       timestamp: Date.now(),
     };
 
-    // Add locally to our own screen
     setMessages((prev) => [...prev, newMessage]);
-
-    // Send it to the server
     socket.emit("send_message", newMessage);
   };
 
-  useEffect(() => {
-    socket.on("receive_message", (message: MessageType) => {});
-  }, []);
-
   return (
-    <div className="max-w-xl mx-auto mt-10 border rounded-xl shadow-lg flex flex-col h-500px">
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2">
-        {messages.map((msg) => (
-          <Message key={msg.id} message={msg} />
-        ))}
-      </div>
+    <div className="mx-auto flex min-h-screen w-full max-w-5xl items-center justify-center px-6 py-10">
+      <div className="flex h-[32rem] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-black/20">
+        <div className="border-b border-slate-200 px-6 py-4 text-left">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-500">
+            Live Chat
+          </p>
+          <h1 className="mt-1 text-2xl font-semibold text-slate-900">
+            Conversation
+          </h1>
+        </div>
 
-      <InputBox onSend={handleSend} />
+        <div className="flex-1 overflow-y-auto bg-slate-50 p-4">
+          {messages.length === 0 ? (
+            <div className="flex h-full items-center justify-center text-sm text-slate-500">
+              Start the conversation by sending your first message.
+            </div>
+          ) : (
+            messages.map((message) => (
+              <Message key={message.id} message={message} />
+            ))
+          )}
+        </div>
+
+        <InputBox onSend={handleSend} />
+      </div>
     </div>
   );
 }
