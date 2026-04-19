@@ -11,6 +11,8 @@ export default function ChatWindow() {
 
   useEffect(() => {
     const handleReceiveMessage = (message: MessageType) => {
+      const roomId = "room1";
+      socket.emit("join_room", roomId);
       setMessages((prev) => {
         if (prev.some((existingMessage) => existingMessage.id === message.id)) {
           return prev;
@@ -24,10 +26,12 @@ export default function ChatWindow() {
 
     return () => {
       socket.off("receive_message", handleReceiveMessage);
+      console.log("User got dissconnected");
     };
   }, []);
 
   const handleSend = (text: string) => {
+    const roomId = "room1";
     const newMessage: MessageType = {
       id: crypto.randomUUID(),
       text,
@@ -36,24 +40,27 @@ export default function ChatWindow() {
     };
 
     setMessages((prev) => [...prev, newMessage]);
-    socket.emit("send_message", newMessage);
+    socket.emit("send_message", {
+      roomId,
+      text,
+    });
   };
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-5xl items-center justify-center px-6 py-10">
-      <div className="flex h-[32rem] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-black/20">
-        <div className="border-b border-slate-200 px-6 py-4 text-left">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-500">
+      <div className="flex h-[32rem] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-zinc-700 bg-zinc-900 shadow-2xl shadow-black/40">
+        <div className="border-b border-zinc-700 px-6 py-4 text-left">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-yellow-400">
             Live Chat
           </p>
-          <h1 className="mt-1 text-2xl font-semibold text-slate-900">
+          <h1 className="mt-1 text-2xl font-semibold text-white">
             Conversation
           </h1>
         </div>
 
-        <div className="flex-1 overflow-y-auto bg-slate-50 p-4">
+        <div className="flex-1 overflow-y-auto bg-zinc-800 p-4">
           {messages.length === 0 ? (
-            <div className="flex h-full items-center justify-center text-sm text-slate-500">
+            <div className="flex h-full items-center justify-center text-sm text-zinc-400">
               Start the conversation by sending your first message.
             </div>
           ) : (
