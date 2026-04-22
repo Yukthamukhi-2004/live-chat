@@ -1,37 +1,42 @@
+import { Button } from "@headlessui/react";
 import { Link } from "react-router-dom";
+import Manu from "./manu";
+
+
+
 
 function Home() {
+
+
   return (
     <div className="flex flex-col min-h-screen items-center justify-center px-6 py-10">
       <div className="w-full max-w-5xl rounded-3xl border border-zinc-700/50 bg-zinc-800/90 p-10">
-        <header className="flex flex-row gap-80">
+        <header className="flex flex-row w-full items-center  justify-between">
           <h1 className="mt-4 text-4xl font-semibold text-white">Welcome</h1>
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row   gap-2">
             <Link
-              className="inline-flex items-center justify-center rounded-xl bg-yellow-400 text-sm font-semibold text-zinc-950 transition hover:bg-yellow-300"
+              className="inline-flex h-10 py-2 px-5 items-center justify-center rounded-xl bg-yellow-400 text-sm font-semibold text-zinc-950 transition hover:bg-yellow-300"
               to="/LoginPage"
             >
               Login
             </Link>
             <Link
-              className="inline-flex items-center justify-center rounded-xl bg-yellow-400 text-sm font-semibold text-zinc-950 transition hover:bg-yellow-300"
+              className="inline-flex h-10 py-2 px-5 items-center justify-center rounded-xl bg-yellow-400 text-sm font-semibold text-zinc-950 transition hover:bg-yellow-300"
               to="/Register"
             >
               Register
             </Link>
           </div>
         </header>
-        <main className="w-full max-w-3xl min-h-fit rounded-3xl border border-zinc-700/50 bg-zinc-900/90 p-10 text-left shadow-2xl shadow-black/40 backdrop-blur">
+        <main className="w-full   min-h-fit rounded-3xl border border-zinc-700/50 bg-zinc-900/90 p-10 text-left shadow-2xl shadow-black/40 backdrop-blur ">
           <p className="text-sm font-semibold uppercase tracking-[0.35em] text-yellow-400">
             Live Chat
           </p>
-
           <p className="mt-3 text-sm leading-6 text-zinc-400">
             Your previous screen looked blank because the page only rendered
             dark content with black text. This version makes the first screen
             visible again.
           </p>
-
           <div className="mt-8 flex items-center gap-4">
             <Link
               to="/chat"
@@ -39,6 +44,17 @@ function Home() {
             >
               Enter chat
             </Link>
+          </div>
+          <div className="mt-8 flex items-center gap-4">
+            <Manu />
+            <input
+              type="text"
+              placeholder="Type your message..."
+              className=" rounded-md border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:ring-offset-zinc-900"
+            />
+            <Button className="inline-flex items-center justify-center rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-yellow-300">
+              create room
+            </Button>
           </div>
         </main>
       </div>
