@@ -1,6 +1,6 @@
 export interface MessageType {
   id: string;
   text: string;
-  sender: string;
+  roomId: string;
   timestamp: number;
 }
